@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+backend/parser
+*.tar.gz
+*.tar
+.claude/
+.DS_Store
+key
+key.pub

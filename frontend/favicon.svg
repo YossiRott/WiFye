@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#e8a020"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#g)"/>
+  <!-- Eye of Ra -->
+  <!-- Eye fill -->
+  <path d="M8 32 Q20 18 32 18 Q44 18 56 32 Q44 46 32 46 Q20 46 8 32 Z"
+        fill="rgba(255,255,255,0.15)"/>
+  <!-- Upper eyelid -->
+  <path d="M8 32 Q20 18 32 18 Q44 18 56 32"
+        stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Lower eyelid -->
+  <path d="M8 32 Q20 46 32 46 Q44 46 56 32"
+        stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Iris ring -->
+  <circle cx="32" cy="32" r="9" stroke="white" stroke-width="2.5" fill="rgba(255,255,255,0.1)"/>
+  <!-- Pupil -->
+  <circle cx="32" cy="32" r="4" fill="white"/>
+  <!-- Outer corner mark (left): Egyptian falcon stripe curving down -->
+  <path d="M8 32 L5 41 Q8 50 14 47"
+        stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Inner corner mark (right): vertical drop with horizontal tick -->
+  <path d="M56 32 L59 40 L54 47"
+        stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
