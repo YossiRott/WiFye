@@ -1,8 +1,35 @@
+<div align="center">
+
+<img src="frontend/favicon.svg" width="84" height="84" alt="Wifye logo" />
+
 # Wifye
 
-**Wifye** is a local-first WiFi packet capture analyzer. Drop in a `.pcap` / `.pcapng` / `.cap` file and it maps every access point and client it sees, fingerprints device types, flags suspicious activity (evil twins, deauth floods), extracts WPA handshakes in hashcat format, and can drive a hashcat cracking session — all from a single-page web UI backed by a Flask API and a custom C 802.11 frame parser.
+**Drop in a WiFi capture. Get a map of every network, every device, every threat — and the handshakes to test your passwords.**
 
-> **For authorized use only.** Wifye includes a WPA/WPA2 handshake cracker (via [hashcat](https://hashcat.net/hashcat/)) intended strictly for penetration testing and security research on networks you own or are explicitly authorized to test. Do not use it against networks without permission.
+[![Python](https://img.shields.io/badge/python-3.9%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/backend-Flask-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Docker](https://img.shields.io/badge/docker-ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![hashcat](https://img.shields.io/badge/cracking-hashcat-e8a020)](https://hashcat.net/hashcat/)
+
+</div>
+
+---
+
+Most pcap analysis means digging through Wireshark filters or squinting at `aircrack-ng` output. **Wifye turns a packet capture into an answer in one drag-and-drop**: who's on the network, what kind of device they are, whether someone's running an evil twin or a deauth attack against you, and — if a handshake was captured — a ready-to-crack hash with hashcat wired in.
+
+It's built for the moment you actually need this: auditing your own network, running a home pentest, or wrapping up a CTF capture before the clock runs out.
+
+<p align="center">
+  <img src="docs/screenshots/networks.png" width="800" alt="Wifye network analysis view showing access points, evil twin and deauth flood alerts" />
+</p>
+
+## Why Wifye
+
+- **One drop, full picture.** No CLI flags, no filters to remember — upload a `.pcap`/`.pcapng`/`.cap` and the dashboard fills in.
+- **It tells you what's wrong, not just what's there.** Evil twins and deauth floods surface as alert banners, not buried log lines.
+- **It fingerprints devices, not just MACs.** OUI lookups plus 802.11 IE analysis mean DVRs, cameras, and IoT gear get called out by name.
+- **Handshake to hash to crack, in the same tab.** No juggling `hcxpcapngtool`, hashcat, and a text editor across three terminals.
+- **Fast.** Frame parsing runs through a small custom C parser instead of loading Scapy for every packet.
 
 ## Features
 
@@ -13,8 +40,14 @@
 - **Wordlist generator** — turns seed words (names, companies, years, etc.) into targeted candidate passwords with capitalization, leet-speak, number suffixes, special characters, word-combining, and prefix mutations.
 - **Threat detection** — evil twin detection (duplicate SSIDs on different BSSIDs), deauth/disassoc flood detection per client, and a probe-request view of devices searching for known networks.
 - **Network map & insights** — SVG topology view of APs and clients, plus a channel-usage chart and alert banners for anything suspicious.
-- **Fast C parser** — frames are parsed by a small custom C program (`backend/parser.c`) instead of Scapy for speed; Scapy is only used for the more intricate EAPOL handshake extraction.
 - **Export** — download results as JSON, CSV, a hashcat `.22000` hash file, or a generated wordlist `.txt`.
+
+<p align="center">
+  <img src="docs/screenshots/map.png" width="380" alt="Network topology map of access points and clients" />
+  <img src="docs/screenshots/hashes.png" width="380" alt="Extracted WPA handshake with built-in hashcat cracking panel" />
+</p>
+
+> **For authorized use only.** Wifye includes a WPA/WPA2 handshake cracker (via [hashcat](https://hashcat.net/hashcat/)) intended strictly for penetration testing and security research on networks you own or are explicitly authorized to test. Do not use it against networks without permission.
 
 ## Tech stack
 
@@ -37,7 +70,7 @@
 ### Run locally
 
 ```bash
-git clone https://github.com/<your-username>/WiFye.git
+git clone https://github.com/YossiRott/WiFye.git
 cd WiFye
 ./run.sh
 ```
@@ -92,6 +125,7 @@ WiFye/
 │   ├── index.html
 │   ├── app.js
 │   └── style.css
+├── docs/screenshots/      # README screenshots
 ├── run.sh                 # Local dev entrypoint
 ├── Dockerfile
 └── docker-compose.yml
