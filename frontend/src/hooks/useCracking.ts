@@ -24,6 +24,7 @@ const POLL_INTERVAL_MS = 2000;
 
 export function useCracking() {
   const [wordlists, setWordlists] = useState<WordlistEntry[]>([]);
+  const [wordlistsLoaded, setWordlistsLoaded] = useState(false);
   const [selectedDicts, setSelectedDicts] = useState<SelectedDict[]>([]);
   const [wordgenPath, setWordgenPath] = useState<string | null>(null);
   const [workload, setWorkload] = useState<Workload>('3');
@@ -62,6 +63,8 @@ export function useCracking() {
       });
     } catch {
       setWordlists([]);
+    } finally {
+      setWordlistsLoaded(true);
     }
   }, []);
 
@@ -169,11 +172,13 @@ export function useCracking() {
     setDone(false);
     setPhase('config');
     setSelectedDicts([]);
+    setWordlistsLoaded(false);
     loadWordlists();
   }, [stopPolling, loadWordlists]);
 
   return {
     wordlists,
+    wordlistsLoaded,
     selectedDicts,
     wordgenPath,
     workload,

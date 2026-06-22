@@ -36,6 +36,7 @@ export function CrackPanel({ hashes, cracking }: CrackPanelProps) {
           <div className="flex flex-col gap-4">
             <DictionarySelector
               wordlists={cracking.wordlists}
+              wordlistsLoaded={cracking.wordlistsLoaded}
               selectedDicts={cracking.selectedDicts}
               onToggle={cracking.toggleDict}
               onRemove={cracking.removeDict}

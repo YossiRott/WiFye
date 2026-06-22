@@ -5,6 +5,7 @@ import type { SelectedDict } from '../../hooks/useCracking';
 
 interface DictionarySelectorProps {
   wordlists: WordlistEntry[];
+  wordlistsLoaded: boolean;
   selectedDicts: SelectedDict[];
   onToggle: (entry: SelectedDict, checked: boolean) => void;
   onRemove: (path: string) => void;
@@ -14,6 +15,7 @@ interface DictionarySelectorProps {
 
 export function DictionarySelector({
   wordlists,
+  wordlistsLoaded,
   selectedDicts,
   onToggle,
   onRemove,
@@ -46,8 +48,10 @@ export function DictionarySelector({
         <div>
           <div className="mb-1.5 text-xs text-text-muted">System Wordlists</div>
           <div className="scrollbar-thin max-h-40 overflow-y-auto rounded-lg border border-border">
-            {wordlists.length === 0 ? (
+            {!wordlistsLoaded ? (
               <div className="p-3 text-xs text-text-muted">Scanning…</div>
+            ) : wordlists.length === 0 ? (
+              <div className="p-3 text-xs text-text-muted">No wordlists found on this system</div>
             ) : (
               wordlists.map((wl) => (
                 <label
