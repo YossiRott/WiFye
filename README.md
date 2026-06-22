@@ -53,17 +53,19 @@ It's built for the moment you actually need this: auditing your own network, run
 
 | Layer       | Tech                                                              |
 |-------------|--------------------------------------------------------------------|
-| Frontend    | Vanilla HTML / CSS / JS, served as static files by Flask           |
-| Backend     | Python (Flask + Flask-CORS)                                        |
+| Frontend    | React + TypeScript (Vite), Tailwind CSS                            |
+| Backend     | Python (Flask + Flask-CORS), organized as services/Blueprints under `backend/wifye/` |
 | Parsing     | Custom C parser (radiotap + 802.11: beacon, probe, assoc, deauth, EAPOL) + Scapy for handshake extraction |
 | Cracking    | [hashcat](https://hashcat.net/hashcat/) subprocess (CPU + GPU)     |
-| Packaging   | Docker / docker-compose                                            |
+| Testing     | pytest (backend) + Vitest/React Testing Library (frontend)         |
+| Packaging   | Docker (multi-stage Node + Python build) / docker-compose          |
 
 ## Getting started
 
 ### Prerequisites
 
 - Python 3.9+
+- Node.js 20+ (to build the React frontend)
 - `gcc` (to compile the C parser)
 - [hashcat](https://hashcat.net/hashcat/) on your `PATH` (only required if you want to use the cracking feature)
 
@@ -75,7 +77,9 @@ cd WiFye
 ./run.sh
 ```
 
-`run.sh` installs Python dependencies, compiles the C parser if needed, and starts the server at **http://localhost:8080**.
+`run.sh` installs Python dependencies, compiles the C parser, builds the React frontend if needed, and starts the server at **http://localhost:8080**.
+
+Actively working on the UI? Run the Flask backend (`cd backend && python3 app.py`) and, in a separate terminal, `cd frontend && npm run dev` for a hot-reloading dev server on `:5173` that proxies `/api/*` to the backend.
 
 ### Run with Docker
 
@@ -113,21 +117,30 @@ This builds the image (installing `hashcat`, `gcc`, and `libpcap-dev`, then comp
 ```
 WiFye/
 ├── backend/
-│   ├── app.py            # Flask app + API routes
-│   ├── analyzer.py       # Calls C parser, builds network/client/alert summary
-│   ├── parser.c           # Fast pcap/pcapng → JSON 802.11 frame parser
-│   ├── hash_extractor.py # EAPOL handshake / PMKID extraction (Scapy)
-│   ├── oui_db.py          # MAC vendor + device-type lookup
-│   ├── cracker.py         # Hashcat subprocess management
-│   ├── wordgen.py         # Wordlist mutation engine
+│   ├── app.py                    # ~15 lines: create_app() + app.run()
+│   ├── parser.c                  # Fast pcap/pcapng → JSON 802.11 frame parser
+│   ├── wifye/
+│   │   ├── config.py             # Config/DevConfig/ProdConfig
+│   │   ├── api/                  # Flask Blueprints (analyze, crack, wordgen, static)
+│   │   ├── analysis/             # FrameParser, PcapAnalyzer, DeviceFingerprinter,
+│   │   │                         # ThreatDetector, HandshakeExtractor
+│   │   ├── cracking/             # CrackJob(Manager), HashcatRunner, WordlistFinder,
+│   │   │                         # DictionaryStore, output parsing
+│   │   ├── wordgen/               # WordlistGenerator
+│   │   ├── devices/               # OUI vendor/device-type lookup
+│   │   └── common/                # MacAddress value object + helpers
+│   ├── tests/                     # pytest suite (unit + fixture-based + API tests)
 │   └── requirements.txt
 ├── frontend/
-│   ├── index.html
-│   ├── app.js
-│   └── style.css
+│   ├── src/
+│   │   ├── api/                   # typed fetch client + request/response types
+│   │   ├── hooks/                  # useAnalysis, useCracking, useWordgen, ...
+│   │   └── components/             # layout, upload, results/tabs, crack, wordgen
+│   ├── package.json
+│   └── vite.config.ts
 ├── docs/screenshots/      # README screenshots
 ├── run.sh                 # Local dev entrypoint
-├── Dockerfile
+├── Dockerfile             # multi-stage: Node build → Python runtime
 └── docker-compose.yml
 ```
 
